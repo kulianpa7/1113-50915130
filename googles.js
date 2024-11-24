@@ -90,7 +90,7 @@ async function googleRegister() {
                 confirmButtonText: '確定',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "log_analog.html";  // 轉向新頁面
+                    window.location.href = "./log_analog.html";  // 轉向新頁面
                     return;
                 }
             });
@@ -127,7 +127,7 @@ async function googleLogin() {
 
             console.log("登入成功", { displayName, email, photoURL, lastLoginTime, newLastLoginTime });
             saveToCookie({ displayName, email, photoURL, lastLoginTime, uid });
-            window.location.href = "/log_analog.html";
+            window.location.href = "./log_analog.html";
         } else {
             console.log("使用者未註冊，請先註冊！");
             Swal.fire({
