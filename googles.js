@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { getDatabase, ref, set, update, onValue,get} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+import { getDatabase, ref, set, update, onValue, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 // 初始化 Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyAv3DXVCQSlKRtWbHptoMyB7CMbtnWueTk",
@@ -21,6 +21,11 @@ const database = getDatabase(app);
 
 // 存到 Cookie 的方法
 function saveToCookie(data) {
+    // 清除所有 Cookie
+    document.cookie.split(";").forEach((cookie) => {
+        const cookieName = cookie.split("=")[0].trim();
+        document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+    });
     const { displayName, email, photoURL, lastLoginTime, uid } = data;
 
     // 將資料存為 JSON 字符串
@@ -61,12 +66,12 @@ async function googleRegister() {
 
         // 檢查使用者是否已存在
         const userRef = ref(database, 'users/' + uid);
-        
+
         const snapshot = await get(userRef); // 使用 get() 來一次性獲取資料
         if (snapshot.exists()) {
             console.log("已經註冊");
             Swal.fire({
-                icon: 'error',          
+                icon: 'error',
                 title: '使用者已經註冊！',
                 text: '請稍後再試，或直接登入。',
                 confirmButtonText: '確定',
@@ -84,7 +89,7 @@ async function googleRegister() {
             saveToCookie({ displayName, email, photoURL, lastLoginTime, uid });
 
             Swal.fire({
-                icon: 'success',          
+                icon: 'success',
                 title: '註冊成功！！',
                 text: '請稍後再試，或直接登入。',
                 confirmButtonText: '確定',
@@ -101,9 +106,9 @@ async function googleRegister() {
     } catch (error) {
         console.error("註冊失敗:", error);
         Swal.fire({
-            icon: 'error',          
+            icon: 'error',
             title: '註冊失敗',
-            text: error.message, 
+            text: error.message,
             confirmButtonText: '確定',
         });
     }
@@ -118,7 +123,7 @@ async function googleLogin() {
 
         // 獲取使用者資訊
         const userRef = ref(database, 'users/' + uid);
-        
+
         const snapshot = await get(userRef); // 使用 get() 來一次性獲取資料
         if (snapshot.exists()) {
             const { displayName, email, photoURL, lastLoginTime } = snapshot.val();
@@ -131,7 +136,7 @@ async function googleLogin() {
         } else {
             console.log("使用者未註冊，請先註冊！");
             Swal.fire({
-                icon: 'error',          
+                icon: 'error',
                 title: '使用者未註冊，請先註冊！',
                 text: '請稍後再試，或聯繫支援。',
                 confirmButtonText: '確定',
@@ -140,7 +145,7 @@ async function googleLogin() {
     } catch (error) {
         console.error("登入失敗:", error);
         Swal.fire({
-            icon: 'error',          
+            icon: 'error',
             title: '登入失敗',
             text: error.message,
             confirmButtonText: '確定',
